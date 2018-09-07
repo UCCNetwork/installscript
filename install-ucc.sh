@@ -66,7 +66,7 @@ function prepare_system()
   echo -e "${GREEN}Upgrading existing packages, it may take some time to finish.${NC}"
   DEBIAN_FRONTEND=noninteractive apt-get -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" -y -qq upgrade 
   
-  echo -e "${GREEN}Installing all dependencies for the Xuma coin master node, it may take some time to finish.${NC}"
+  echo -e "${GREEN}Installing all dependencies for the UCC coin master node, it may take some time to finish.${NC}"
   apt install -y sudo git wget pwgen automake build-essential libtool autotools-dev autoconf pkg-config libssl-dev libboost-all-dev software-properties-common fail2ban ufw htop unzip
   apt-add-repository -y ppa:bitcoin/bitcoin
   apt update
@@ -113,7 +113,7 @@ function deploy_binary()
     cp ./src/$DAEMON_BINARY /usr/local/bin/ >/dev/null 2>&1
     cp ./src/$CLI_BINARY /usr/local/bin/ >/dev/null 2>&1
 
-    chmod +x /usr/local/bin/xuma*;
+    chmod +x /usr/local/bin/ucc*;
 
     cd
   fi
@@ -287,7 +287,7 @@ function add_log_truncate()
 {
   LOG_FILE="$DATA_DIR/debug.log";
 
-  mkdir ~/.xuma >/dev/null 2>&1
+  mkdir ~/.ucc >/dev/null 2>&1
   cat << EOF >> $DATA_DIR/logrotate.conf
 $DATA_DIR/*.log {
     rotate 4
@@ -311,13 +311,13 @@ function show_output()
  echo -e "${GREEN}Your UCC master node is up and running.${NC}" 
  echo
  echo -e "${YELLOW}It is recommended that you copy/paste all of this information and keep it in a safely kept file on your local PC"
- echo -e "so you know how to use the commands below to manage your Xuma master node.${NC}"
+ echo -e "so you know how to use the commands below to manage your UCC master node.${NC}"
  echo
  echo -e " - it is running as user ${GREEN}$USER_NAME${NC} and it is listening on port ${GREEN}$DAEMON_PORT${NC} at your VPS address ${GREEN}$DAEMON_IP${NC}."
  echo -e " - the ${GREEN}$USER_NAME password${NC} is ${GREEN}$USER_PASSWORD${NC}"
- echo -e " - the Xuma binary files are installed to ${GREEN}/usr/local/bin${NC}"
+ echo -e " - the UCC binary files are installed to ${GREEN}/usr/local/bin${NC}"
  echo -e " - all data and configuration for the masternode is located at ${GREEN}$DATA_DIR${NC} and the folders within"
- echo -e " - the Xuma configuration file is located at ${GREEN}$DATA_DIR/$CONFIG_FILE${NC}"
+ echo -e " - the UCC configuration file is located at ${GREEN}$DATA_DIR/$CONFIG_FILE${NC}"
  echo -e " - the masternode privkey is ${GREEN}$PRIV_KEY${NC}"
  echo
  echo -e "You can manage your UCC service from your SSH cmdline with the following commands:"
@@ -339,7 +339,7 @@ function show_output()
  echo -e "  running the ${GREEN}getinfo${NC} command."
  echo -e "  NOTE: the deamon must be running first before trying this command. See notes above on service commands usage."
  echo 
- echo -e "You can run ${GREEN}htop${NC} if you want to verify the Xuma service is running or to monitor your server."
+ echo -e "You can run ${GREEN}htop${NC} if you want to verify the UCC service is running or to monitor your server."
  if [[ $SSH_PORTNUMBER -ne $DEFAULT_SSH_PORT ]]; then
  echo
  echo -e " ATTENTION: you have changed your SSH port, make sure you modify your SSH client to use port $SSH_PORTNUMBER so you can login."
