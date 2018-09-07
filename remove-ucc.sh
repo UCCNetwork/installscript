@@ -73,7 +73,7 @@ function clean_cron()
   echo -e "${GREEN}Cleaning all UCC related cron jobs.${NC}"
 
   crontab -l | grep -v '/usr/sbin/logrotate' | crontab -
-  crontab -l | grep -v '~/.xuma/clearlog-$USER_NAME.sh' | crontab -
+  crontab -l | grep -v '~/.ucc/clearlog-$USER_NAME.sh' | crontab -
 }
 
 function clean_firewall() 
@@ -93,7 +93,7 @@ function remove_ucc_folder()
 {
   echo -e "${GREEN}Cleaning all UCC files from root home folder.${NC}"
 
-  rm -rf ~/.xuma
+  rm -rf ~/.ucc
 }
 
 function cleaup_system() 
@@ -106,7 +106,7 @@ function cleaup_system()
   clean_firewall
   remove_ucc_folder
   
-  echo -e "${GREEN}All files and folders for the Xuma masternode have been removed from this server.${NC}"
+  echo -e "${GREEN}All files and folders for the UCC masternode have been removed from this server.${NC}"
 }
 
 clear
