@@ -201,7 +201,7 @@ function ask_user()
     echo "$USER_NAME:$USER_PASSWORD" | chpasswd
 
     home_dir=$(sudo -H -u $USER_NAME bash -c 'echo $HOME')
-    DATA_DIR="$home_dir/.ucc
+    DATA_DIR="$home_dir/.ucc"
         
     mkdir -p $DATA_DIR
     chown -R $USER_NAME: $DATA_DIR >/dev/null 2>&1
