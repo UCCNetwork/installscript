@@ -1,16 +1,16 @@
 #!/bin/bash
 
 TMP_FOLDER=$(mktemp -d)
-CONFIG_FILE="xuma.conf"
-DEFAULT_USER="xuma-mn1"
-DEFAULT_PORT=19777
-DEFAULT_RPC_PORT=19643
+CONFIG_FILE="ucc.conf"
+DEFAULT_USER="ucc-mn1"
+DEFAULT_PORT=41112
+DEFAULT_RPC_PORT=41113
 DEFAULT_SSH_PORT=22
-DAEMON_BINARY="xumad"
-CLI_BINARY="xuma-cli"
+DAEMON_BINARY="uccd"
+CLI_BINARY="ucc-cli"
 DAEMON_BINARY_FILE="/usr/local/bin/$DAEMON_BINARY"
 CLI_BINARY_FILE="/usr/local/bin/$CLI_BINARY"
-GITHUB_REPO="https://github.com/xumacoin/xuma-core.git"
+GITHUB_REPO="https://github.com/UCCNetwork/ucc.git"
 
 RED='\033[0;31m'
 GREEN='\033[0;32m'
@@ -30,7 +30,7 @@ function checks()
   fi
 
   if [ -n "$(pidof $DAEMON_BINARY)" ]; then
-    echo -e "The Xuma daemon is already running. Xuma does not support multiple masternodes on one host."
+    echo -e "The uccd daemon is already running. UCC does not support multiple masternodes on one host."
     NEW_NODE="n"
     clear
   else
@@ -70,7 +70,7 @@ function prepare_system()
   apt install -y sudo git wget pwgen automake build-essential libtool autotools-dev autoconf pkg-config libssl-dev libboost-all-dev software-properties-common fail2ban ufw htop unzip
   apt-add-repository -y ppa:bitcoin/bitcoin
   apt update
-  apt install -y libdb4.8-dev libdb4.8++-dev libminiupnpc-dev
+  apt install -y libdb4.8-dev libdb4.8++-dev libminiupnpc-dev libevent-dev
   apt autoremove -y
   apt autoclean -y
   clear
@@ -83,7 +83,7 @@ function prepare_system()
       echo -e "apt install -y git wget pwgen automake build-essential libtool autotools-dev autoconf pkg-config libssl-dev libboost-all-dev software-properties-common fail2ban ufw htop unzip"
       echo -e "apt-add-repository -y ppa:bitcoin/bitcoin"
       echo -e "apt update"
-      echo -e "apt install -y libdb4.8-dev libdb4.8++-dev libminiupnpc-dev"
+      echo -e "apt install -y libdb4.8-dev libdb4.8++-dev libminiupnpc-dev libevent-dev"
       echo -e "apt autoremove -y"
       echo -e "apt autoclean -y"
    exit 1
@@ -95,13 +95,13 @@ function prepare_system()
 function deploy_binary() 
 {
   if [ -f $DAEMON_BINARY_FILE ]; then
-    echo -e "${GREEN}Xuma daemon binary file already exists, using binary from $DAEMON_BINARY_FILE.${NC}"
+    echo -e "${GREEN}UCC daemon binary file already exists, using binary from $DAEMON_BINARY_FILE.${NC}"
   else
     cd $TMP_FOLDER
 
-    echo -e "${GREEN}Downloading source code from the Xuma GitHub repository at $GITHUB_REPO.${NC}"
+    echo -e "${GREEN}Downloading source code from the UCC GitHub repository at $GITHUB_REPO.${NC}"
     git clone $GITHUB_REPO
-    cd xuma-core
+    cd ucc
 
     echo -e "${GREEN}Compiling the source code, this will take some time.${NC}"
     ./autogen.sh
@@ -126,8 +126,8 @@ function enable_firewall()
   apt install ufw -y >/dev/null 2>&1
 
   ufw disable >/dev/null 2>&1
-  ufw allow $DAEMON_PORT/tcp comment "Xuma Masternode port" >/dev/null 2>&1
-  ufw allow $DEFAULT_RPC_PORT/tcp comment "Xuma Masernode RPC port" >/dev/null 2>&1
+  ufw allow $DAEMON_PORT/tcp comment "UCC Masternode port" >/dev/null 2>&1
+  ufw allow $DEFAULT_RPC_PORT/tcp comment "UCC Masernode RPC port" >/dev/null 2>&1
   
   ufw allow $SSH_PORTNUMBER/tcp comment "Custom SSH port" >/dev/null 2>&1
   ufw limit $SSH_PORTNUMBER/tcp >/dev/null 2>&1
@@ -147,7 +147,7 @@ function add_daemon_service()
 {
   cat << EOF > /etc/systemd/system/$USER_NAME.service
 [Unit]
-Description=Xuma deamon service
+Description=UCC deamon service
 After=network.target
 After=syslog.target
 [Service]
@@ -155,8 +155,8 @@ Type=forking
 User=$USER_NAME
 Group=$USER_NAME
 WorkingDirectory=$DATA_DIR
-ExecStart=$DAEMON_BINARY_FILE -datadir=$DATA_DIR -conf=$DATA_DIR/mainnet/xuma.conf -daemon
-ExecStop=$CLI_BINARY_FILE -datadir=$DATA_DIR -conf=$DATA_DIR/mainnet/xuma.conf stop
+ExecStart=$DAEMON_BINARY_FILE -- -datadir=$DATA_DIR -conf=$DATA_DIR/ucc.conf -daemon
+ExecStop=$CLI_BINARY_FILE -- -datadir=$DATA_DIR -conf=$DATA_DIR/ucc.conf stop
 Restart=always
 RestartSec=3
 PrivateTmp=true
@@ -164,23 +164,21 @@ TimeoutStopSec=60s
 TimeoutStartSec=10s
 StartLimitInterval=120s
 StartLimitBurst=5
-  
 [Install]
 WantedBy=multi-user.target
-Alias=xumad.service
 EOF
 
   systemctl daemon-reload
   sleep 3
 
-  echo -e "${GREEN}Starting the Xuma service from $DAEMON_BINARY_FILE on port $DAEMON_PORT.${NC}"
+  echo -e "${GREEN}Starting the UCC service from $DAEMON_BINARY_FILE on port $DAEMON_PORT.${NC}"
   systemctl start $USER_NAME.service >/dev/null 2>&1
   
   echo -e "${GREEN}Enabling the service to start on reboot.${NC}"
   systemctl enable $USER_NAME.service >/dev/null 2>&1
 
   if [[ -z $(pidof $DAEMON_BINARY) ]]; then
-    echo -e "${RED}The Xuma masternode service is not running${NC}. You should start by running the following commands as root:"
+    echo -e "${RED}The UCC masternode service is not running${NC}. You should start by running the following commands as root:"
     echo "systemctl start $USER_NAME.service"
     echo "systemctl status $USER_NAME.service"
     echo "less /var/log/syslog"
@@ -190,12 +188,12 @@ EOF
 
 function ask_port() 
 {
-  read -e -p "$(echo -e $YELLOW Enter a port to run the Xuma service on: $NC)" -i $DEFAULT_PORT DAEMON_PORT
+  read -e -p "$(echo -e $YELLOW Enter a port to run the UCC service on: $NC)" -i $DEFAULT_PORT DAEMON_PORT
 }
 
 function ask_user() 
 {  
-  read -e -p "$(echo -e $YELLOW Enter a new username to run the Xuma service as: $NC)" -i $DEFAULT_USER USER_NAME
+  read -e -p "$(echo -e $YELLOW Enter a new username to run the UCC service as: $NC)" -i $DEFAULT_USER USER_NAME
 
   if [ -z "$(getent passwd $USER_NAME)" ]; then
     useradd -m $USER_NAME
@@ -203,10 +201,9 @@ function ask_user()
     echo "$USER_NAME:$USER_PASSWORD" | chpasswd
 
     home_dir=$(sudo -H -u $USER_NAME bash -c 'echo $HOME')
-    DATA_DIR="$home_dir/.xuma"
+    DATA_DIR="$home_dir/.ucc
         
     mkdir -p $DATA_DIR
-    mkdir -p $DATA_DIR/mainnet
     chown -R $USER_NAME: $DATA_DIR >/dev/null 2>&1
     
     sudo -u $USER_NAME bash -c : && RUNAS="sudo -u $USER_NAME"
@@ -244,7 +241,7 @@ function create_config()
   RPCUSER=$(pwgen -s 8 1)
   RPCPASSWORD=$(pwgen -s 15 1)
   DAEMON_IP=$(ip route get 1 | awk '{print $NF;exit}')  
-  cat << EOF > $DATA_DIR/mainnet/$CONFIG_FILE
+  cat << EOF > $DATA_DIR/$CONFIG_FILE
 rpcuser=$RPCUSER
 rpcpassword=$RPCPASSWORD
 rpcport=$DEFAULT_RPC_PORT
@@ -253,19 +250,8 @@ listen=1
 server=1
 daemon=1
 port=$DAEMON_PORT
-maxconnections=256
-logtimestamps=1
 externalip=$DAEMON_IP
 bind=$DAEMON_IP
-addnode=159.89.120.208
-addnode=159.89.120.226
-addnode=165.227.230.24
-addnode=159.65.63.79
-addnode=159.203.10.85
-addnode=138.197.151.120
-addnode=139.59.38.142
-addnode=159.89.170.123
-
 EOF
 }
 
@@ -278,7 +264,7 @@ function create_key()
     sleep 5
 
     if [ -z "$(pidof $DAEMON_BINARY)" ]; then
-    echo -e "${RED}Xuma deamon couldn't start, could not generate a private key. Check /var/log/syslog for errors.${NC}"
+    echo -e "${RED}UCC deamon couldn't start, could not generate a private key. Check /var/log/syslog for errors.${NC}"
     exit 1
     fi
 
@@ -289,21 +275,21 @@ function create_key()
 
 function update_config() 
 {
-  cat << EOF >> $DATA_DIR/mainnet/$CONFIG_FILE
+  cat << EOF >> $DATA_DIR/$CONFIG_FILE
 masternode=1
 masternodeaddr=$DAEMON_IP:$DAEMON_PORT
 masternodeprivkey=$PRIV_KEY
 EOF
-  chown $USER_NAME: $DATA_DIR/mainnet/$CONFIG_FILE >/dev/null
+  chown $USER_NAME: $DATA_DIR/$CONFIG_FILE >/dev/null
 }
 
 function add_log_truncate()
 {
-  LOG_FILE="$DATA_DIR/mainnet/debug.log";
+  LOG_FILE="$DATA_DIR/debug.log";
 
   mkdir ~/.xuma >/dev/null 2>&1
   cat << EOF >> $DATA_DIR/logrotate.conf
-$DATA_DIR/mainnet/*.log {
+$DATA_DIR/*.log {
     rotate 4
     weekly
     compress
@@ -322,7 +308,7 @@ function show_output()
  echo
  echo -e "================================================================================================================================"
  echo
- echo -e "${GREEN}Your Xuma coin master node is up and running.${NC}" 
+ echo -e "${GREEN}Your UCC master node is up and running.${NC}" 
  echo
  echo -e "${YELLOW}It is recommended that you copy/paste all of this information and keep it in a safely kept file on your local PC"
  echo -e "so you know how to use the commands below to manage your Xuma master node.${NC}"
@@ -331,10 +317,10 @@ function show_output()
  echo -e " - the ${GREEN}$USER_NAME password${NC} is ${GREEN}$USER_PASSWORD${NC}"
  echo -e " - the Xuma binary files are installed to ${GREEN}/usr/local/bin${NC}"
  echo -e " - all data and configuration for the masternode is located at ${GREEN}$DATA_DIR${NC} and the folders within"
- echo -e " - the Xuma configuration file is located at ${GREEN}$DATA_DIR/mainnet/$CONFIG_FILE${NC}"
+ echo -e " - the Xuma configuration file is located at ${GREEN}$DATA_DIR/$CONFIG_FILE${NC}"
  echo -e " - the masternode privkey is ${GREEN}$PRIV_KEY${NC}"
  echo
- echo -e "You can manage your Xuma service from your SSH cmdline with the following commands:"
+ echo -e "You can manage your UCC service from your SSH cmdline with the following commands:"
  echo -e " - ${GREEN}systemctl start $USER_NAME.service${NC} to start the service."
  echo -e " - ${GREEN}systemctl stop $USER_NAME.service${NC} to stop the service."
  echo -e " - ${GREEN}systemctl status $USER_NAME.service${NC} to get the status of the service."
@@ -347,7 +333,7 @@ function show_output()
  echo -e "commands do not need to be used. You should use the ${GREEN}servicectl${NC} commands listed above instead."
  echo
  echo -e "You can find the masternode status when logged in as $USER_NAME using the command below:"
- echo -e " - ${GREEN}${CLI_BINARY} getinfo${NC} to retreive your nodes status and information"
+ echo -e " - ${GREEN}${CLI_BINARY} getinfo${NC} to retrieve your nodes status and information"
  echo
  echo -e "  if you are not logged in as $USER_NAME then you can run ${YELLOW}su - $USER_NAME${NC} to switch to that user before"
  echo -e "  running the ${GREEN}getinfo${NC} command."
@@ -382,20 +368,20 @@ clear
 echo
 echo -e "========================================================================================================="
 echo -e "${GREEN}"
-echo -e "                                        Yb  dP 8b    d8 Yb  dP"
-echo    "                                         YbdP  88b  d88  YbdP"
-echo    "                                         dPYb  88YbdP88  dPYb" 
-echo -e "                                        dP  Yb 88 YY 88 dP  Yb" 
+echo -e "                                        u   u       c       c"
+echo    "                                        u   u    c       c"
+echo    "                                        u   u    c       c" 
+echo -e "                                        uuuud       c       c" 
 echo                          
 echo -e "${NC}"
-echo -e "This script will automate the installation of your Xuma coin masternode and server configuration by"
+echo -e "This script will automate the installation of your UCC coin masternode and server configuration by"
 echo -e "performing the following steps:"
 echo
 echo -e " - Create a swap file if VPS is < 2GB RAM for better performance"
 echo -e " - Prepare your system with the required dependencies"
-echo -e " - Obtain the latest Xuma masternode files from the Xuma GitHub repository"
-echo -e " - Create a user and password to run the Xuma masternode service"
-echo -e " - Install the Xuma masternode service"
+echo -e " - Obtain the latest UCC masternode files from the UCC GitHub repository"
+echo -e " - Create a user and password to run the UCC masternode service"
+echo -e " - Install the UCC masternode service"
 echo -e " - Update your system with a non-standard SSH port (optional)"
 echo -e " - Add DDoS protection using fail2ban"
 echo -e " - Update the system firewall to only allow; SSH, the masternode ports and outgoing connections"
@@ -404,10 +390,10 @@ echo
 echo -e "The script will output ${YELLOW}questions${NC}, ${GREEN}information${NC} and ${RED}errors${NC}"
 echo -e "When finished the script will show a summary of what has been done."
 echo
-echo -e "Script created by click2install"
-echo -e " - GitHub: https://github.com/click2install/xumacoin"
+echo -e "Script created by click2install and adopted by fly"
+echo -e " - GitHub: https://github.com/UCCNetwork/installscript/"
 echo -e " - Discord: click2install#9625"
-echo -e " - Xuma: XWKSQTpNqx63tuNdKnxvLAuX6sz1GCVWY6"
+echo -e " - UCC Donation: -LATER-"
 echo 
 echo -e "========================================================================================================="
 echo
@@ -424,6 +410,6 @@ if [[ "$NEW_NODE" == "new" ]]; then
   deploy_binary
   setup_node
 else
-    echo -e "${GREEN}The Xuma daemon is already running. Xuma does not support multiple masternodes on one host.${NC}"
+    echo -e "${GREEN}The UCC daemon is already running. UCC does not support multiple masternodes on one host.${NC}"
   exit 0
 fi
