@@ -1,8 +1,8 @@
 #!/bin/bash
 
-DEFAULT_PORT=19777
-DEFAULT_RPC_PORT=19643
-DAEMON_BINARY="xumad"
+DEFAULT_PORT=41112
+DEFAULT_RPC_PORT=41113
+DAEMON_BINARY="uccd"
 DAEMON_BINARY_FILE="/usr/local/bin/$DAEMON_BINARY"
 
 RED='\033[0;31m'
@@ -23,17 +23,17 @@ function checks()
   fi
 
   if [ ! -f $DAEMON_BINARY_FILE ]; then
-    echo -e "${RED}The Xuma daemon is not where it is expected to be, this script is not relevant.${NC}"
+    echo -e "${RED}The UCC daemon is not where it is expected to be, this script is not relevant.${NC}"
     exit 1
   fi
 }
 
 function ask_user() 
 {  
-  read -e -p "$(echo -e $YELLOW Enter the username that was used to install the Xuma service: $NC)" -i "" USER_NAME
+  read -e -p "$(echo -e $YELLOW Enter the username that was used to install the UCC service: $NC)" -i "" USER_NAME
 
   if [ -z "$USER_NAME" ]; then
-    echo -e "${RED}A username must be provided, so the Xuma configuration can be removed.${NC}"
+    echo -e "${RED}A username must be provided, so the UCC configuration can be removed.${NC}"
     ask_user
   fi
 
@@ -63,14 +63,14 @@ function remove_service()
 
 function remove_deamon() 
 {
-  echo -e "${GREEN}Removing the Xuma binary files from /usr/local/bin.${NC}"
+  echo -e "${GREEN}Removing the UCC binary files from /usr/local/bin.${NC}"
   
-  rm -f /usr/local/bin/xuma*
+  rm -f /usr/local/bin/ucc*
 }
 
 function clean_cron() 
 {
-  echo -e "${GREEN}Cleaning all Xuma related cron jobs.${NC}"
+  echo -e "${GREEN}Cleaning all UCC related cron jobs.${NC}"
 
   crontab -l | grep -v '/usr/sbin/logrotate' | crontab -
   crontab -l | grep -v '~/.xuma/clearlog-$USER_NAME.sh' | crontab -
@@ -89,9 +89,9 @@ function clean_firewall()
   echo "y" | ufw enable >/dev/null 2>&1
 }
 
-function remove_xuma_folder()
+function remove_ucc_folder()
 {
-  echo -e "${GREEN}Cleaning all Xuma files from root home folder.${NC}"
+  echo -e "${GREEN}Cleaning all UCC files from root home folder.${NC}"
 
   rm -rf ~/.xuma
 }
@@ -104,7 +104,7 @@ function cleaup_system()
   remove_user
   clean_cron
   clean_firewall
-  remove_xuma_folder
+  remove_ucc_folder
   
   echo -e "${GREEN}All files and folders for the Xuma masternode have been removed from this server.${NC}"
 }
@@ -114,18 +114,18 @@ clear
 echo
 echo -e "========================================================================================================="
 echo -e "${RED}"
-echo -e "                                        Yb  dP 8b    d8 Yb  dP"
-echo    "                                         YbdP  88b  d88  YbdP"
-echo    "                                         dPYb  88YbdP88  dPYb" 
-echo -e "                                        dP  Yb 88 YY 88 dP  Yb" 
+echo -e "                                        u    u        c       c"
+echo    "                                        u    u     c      c"
+echo    "                                        u    u     c      c" 
+echo -e "                                        uuuuuu        c       c" 
 echo                          
 echo -e "${NC}"
-echo -e "This script removes all trace of the Xuma masternode if it was installed using click2install's GitHub"
+echo -e "This script removes all trace of the UCC masternode if it was installed using click2install's GitHub"
 echo -e "script, by performing the following tasks:"
-echo -e " - remove the Xuma daemon and cli files"
-echo -e " - remove the provided users home folder containing the Xuma configuration"
-echo -e " - Remove the Xuma ports from your firewall so they remain blocked"
-echo -e " - Remove the Xuma service configuration"
+echo -e " - remove the UCC daemon and cli files"
+echo -e " - remove the provided users home folder containing the UCC configuration"
+echo -e " - Remove the UCC ports from your firewall so they remain blocked"
+echo -e " - Remove the UCC service configuration"
 echo -e " - Clean up any cron tasks that were created"
 echo
 echo -e "this script DOES NOT:"
@@ -133,9 +133,9 @@ echo -e " - remove fail2ban"
 echo -e " - modify SSH ports"
 echo
 echo -e "Script created by click2install"
-echo -e " - GitHub: https://github.com/click2install/xumacoin"
+echo -e " - GitHub: https://github.com/UCCNetwork/installscript/"
 echo -e " - Discord: click2install#9625"
-echo -e " - Xuma: XaKWpVCzJbFHRTTZ9qrbgfsbnmw7yXFzxp"
+echo -e " - UCC: -LATER-"
 echo 
 echo -e "========================================================================================================="
 echo
