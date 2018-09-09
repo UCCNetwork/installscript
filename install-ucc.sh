@@ -261,7 +261,7 @@ function create_key()
 
   if [[ -z "$PRIV_KEY" ]]; then
     sudo -u $USER_NAME $DAEMON_BINARY_FILE -datadir=$DATA_DIR -daemon >/dev/null 2>&1
-    sleep 5
+    sleep 15
 
     if [ -z "$(pidof $DAEMON_BINARY)" ]; then
     echo -e "${RED}UCC deamon couldn't start, could not generate a private key. Check /var/log/syslog for errors.${NC}"
