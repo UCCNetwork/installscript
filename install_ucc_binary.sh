@@ -97,7 +97,8 @@ function deploy_binary()
 {
   
   mkdir ucc_binary && cd ucc_binary
-  wget -q $BINARY_LINK
+  wget $BINARY_LINK
+  sleep 5
   unzip UCC*
   cd UCC*
   cp -a $DAEMON_BINARY $DAEMON_BINARY_FILE
