@@ -393,7 +393,7 @@ echo
 echo -e "Script created by click2install and adopted by fly"
 echo -e " - GitHub: https://github.com/UCCNetwork/installscript/"
 echo -e " - Discord: click2install#9625"
-echo -e " - UCC Donation: -LATER-"
+echo -e " - UCC Donation: UZVPzBSEYeFKCpchjBGr72tC3SMpgvNWSe"
 echo 
 echo -e "========================================================================================================="
 echo

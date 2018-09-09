@@ -26,7 +26,7 @@ bash install-ucc.sh
 Donations for the creation and maintenance of this script are welcome at:
 &nbsp;
 
- - will be filled later with click2install's address if he approves it - 
+UCC: UZVPzBSEYeFKCpchjBGr72tC3SMpgvNWSe
 
 &nbsp;
 
