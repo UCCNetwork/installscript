@@ -1,7 +1,7 @@
 #!/bin/bash
 
 TMP_FOLDER=$(mktemp -d)
-BINARY_LINK="https://github.com/UCCNetwork/ucc/releases/download/v.2.0.0.0/UCC-Linux64-v.2.0.0.0.zip"
+BINARY_LINK="https://github.com/UCCNetwork/ucc/releases/download/v.2.0.0.1/UCC-Linux64-v.2.0.0.1.zip"
 CONFIG_FILE="ucc.conf"
 DEFAULT_USER="ucc-mn1"
 DEFAULT_PORT=41112
