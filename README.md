@@ -17,7 +17,7 @@ Shell scripts to install and remove a UCC Masternode on a Linux server running U
 
 ## Installation 
 ```
-wget -q https://raw.githubusercontent.com/UCCNetwork/installscript/master/install-ucc.sh  
+wget -q https://raw.githubusercontent.com/UCCNetwork/installscript/master/install_ucc_binary.sh  
 bash install-ucc.sh
 ```
 
