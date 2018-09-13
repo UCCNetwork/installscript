@@ -18,7 +18,7 @@ Shell scripts to install and remove a UCC Masternode on a Linux server running U
 ## Installation 
 ```
 wget -q https://raw.githubusercontent.com/UCCNetwork/installscript/master/install_ucc_binary.sh  
-bash install-ucc.sh
+bash install_ucc_binary.sh 
 ```
 
 **NOTE:** The istall script needs to be run as the root user. You can `su - root` once you login to change to the root user before running the script. See the [Security](#security) section below on how to setup your node so you are not logging in or installing programs into the root users account.
