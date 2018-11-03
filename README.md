@@ -55,7 +55,7 @@ You are now ready to configure your local wallet and finish the masternode setup
  12. Your masternodes.conf file entry should look like: `MN-1 127.0.0.2:6110 93HaYBVUCYjEMeeH1Y4sBGLALQZE1Yc1K64xiqgX37tGBDQL8Xg 2bcd3c84c84f87eaa86e4e56834c92927a07f9e18718810b92e0d0324456a67c 0`
  13. Save and close your masternodes.conf file
  14. Close your wallet and restart the wallet
- 15. Open the debug console and type `masternode start-alias <address-name from #6>`
+ 15. Go to Masternode Tab and right click on the Node, select START.
  16. Your node should now be running successfully.
 
 &nbsp;
