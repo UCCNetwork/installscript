@@ -1,4 +1,4 @@
-# UCC Coin
+# UCC Masternode Installation Script - Readme
 
 Shell scripts to install and remove a UCC Masternode on a Linux server running Ubuntu 16.04.
 
