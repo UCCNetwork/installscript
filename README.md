@@ -80,7 +80,7 @@ If you want to run the script before setting up the node in your cold wallet the
 If you are upgrading an existing node that was installed using the install script above, you can perform these steps to easily update the node without re-sending your UCC collateral.
 
  1. Run the update script
- 2. Start your node from your local PC wallet as usual
+ 2. Start your node from your local PC wallet as usual (make sure that you have the same local wallet version as on the server!)
 
 ```
 wget -q https://raw.githubusercontent.com/UCCNetwork/installscript/master/update-ucc.sh && bash update-ucc.sh
