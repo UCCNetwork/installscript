@@ -36,12 +36,14 @@ function checks()
   if [ -n "$(pidof $DAEMON_BINARY)" ]; then
     echo -e "${GREEN}The uccd daemon is already running. We will update it.${NC}"
   else
-    echo -e "${RED}The uccd daemon is currently not already running. We try update it.${NC}"
-    echo -e "${RED}Searching for the user and data-directoy ....${NC}"
+    echo -e "${RED}The uccd daemon is currently not running. We try update it.${NC}"
+    sleep 2
+    echo -e "${RED}Searching for the user and data-directoy ...${NC}"
+    sleep 2
     DATADIR=$(find /home -type d -name ".ucc")
     DEFAULT_USER=$(echo "$DATADIR" | rev | awk -F \/ '{print $2}' | rev)
-    if [ -f $DEFAULT_USER ]; then
-      echo -e "${GREEN}Found the user: $DEFAULT_USER.${NC}"
+    if [ -d $DEFAULT_USER ]; then
+      echo -e "${GREEN}Found the user: $DEFAULT_USER. We continue with the update.${NC}"
     else
       echo -e "${RED}UCC seems not to be installed.${NC}"
       read -e -p "$(echo -e $YELLOW Should we fetch the install-script and install a new masternode? [Y/N] $NC)" ICHOICE
@@ -56,7 +58,6 @@ function checks()
 
 function stop_service() 
 {
-  clear
   echo -e "${GREEN}Stopping UCC Masternode ... this takes some time ...${NC}"
   sleep 2
   systemctl stop "$USER_NAME"
