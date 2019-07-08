@@ -2,7 +2,7 @@
 
 TMP_FOLDER=$(mktemp -d)
 BINARY_LINK="https://github.com/UCCNetwork/ucc/releases/download/v2.2.0.0/UCC-2.2.0.0-Linux64bit.zip"
-DEFAULT_USER="ucc-mn1"
+DEFAULT_USER="$( pgrep -n '$DAEMON_BINARY' | xargs -r ps -o uname= -p )"
 DAEMON_BINARY="uccd"
 CLI_BINARY="ucc-cli"
 DAEMON_BINARY_FILE="/usr/local/bin/$DAEMON_BINARY"
@@ -57,7 +57,6 @@ function update_binary()
 
 function ask_user() 
 { 
-  DEFAULT_USER="$( pgrep -n '$DAEMON_BINARY' | xargs -r ps -o uname= -p )"
   read -e -p "$(echo -e $YELLOW We found this user running the Masternode. Please change if it is not correct:  $NC)" -i $DEFAULT_USER USER_NAME
 
   if [ -z "$(getent passwd $USER_NAME)" ]; then
