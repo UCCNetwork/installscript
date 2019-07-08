@@ -48,8 +48,7 @@ function start_service()
 
 function update_binary() 
 { 
-  TMPPATH=$( mktemp )
-  cd $TMPPATH
+  cd $TMP_FOLDER
   mkdir ucc_binary && cd ucc_binary
   echo -e "${GREEN}Downloading UCC Binary from Github ...${NC}"
   wget $BINARY_LINK
