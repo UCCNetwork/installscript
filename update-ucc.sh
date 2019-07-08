@@ -62,7 +62,7 @@ function update_binary()
 
 function ask_user() 
 { 
-  DEFAULT_USER = "$( pgrep -n '$DAEMON_BINARY' | xargs -r ps -o uname= -p )
+  DEFAULT_USER = "$( pgrep -n '$DAEMON_BINARY' | xargs -r ps -o uname= -p )"
   read -e -p "$(echo -e $YELLOW We found this user running the Masternode. Please change if it is not correct:  $NC)" -i $DEFAULT_USER USER_NAME
 
   if [ -z "$(getent passwd $USER_NAME)" ]; then
