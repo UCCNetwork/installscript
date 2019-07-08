@@ -2,16 +2,11 @@
 
 TMP_FOLDER=$(mktemp -d)
 BINARY_LINK="https://github.com/UCCNetwork/ucc/releases/download/v2.2.0.0/UCC-2.2.0.0-Linux64bit.zip"
-CONFIG_FILE="ucc.conf"
 DEFAULT_USER="ucc-mn1"
-DEFAULT_PORT=41112
-DEFAULT_RPC_PORT=41113
-DEFAULT_SSH_PORT=22
 DAEMON_BINARY="uccd"
 CLI_BINARY="ucc-cli"
 DAEMON_BINARY_FILE="/usr/local/bin/$DAEMON_BINARY"
 CLI_BINARY_FILE="/usr/local/bin/$CLI_BINARY"
-GITHUB_REPO="https://github.com/UCCNetwork/ucc.git"
 
 RED='\033[0;31m'
 GREEN='\033[0;32m'
@@ -35,20 +30,20 @@ function stop_service()
 {
   clear
   echo -e "${GREEN}Stopping UCC Masternode ...${NC}"
-  systemctl stop $USER_NAME.service
+  systemctl stop "$USER_NAME"
 }
 
 function start_service() 
 {
   clear
   echo -e "${GREEN}Starting UCC Masternode ...${NC}"
-  systemctl start $USER_NAME.service
+  systemctl start "$USER_NAME"
   sleep 5
 }
 
 function update_binary() 
 { 
-  cd $TMP_FOLDER
+  cd "$TMP_FOLDER"
   mkdir ucc_binary && cd ucc_binary
   echo -e "${GREEN}Downloading UCC Binary from Github ...${NC}"
   wget $BINARY_LINK
@@ -62,7 +57,7 @@ function update_binary()
 
 function ask_user() 
 { 
-  DEFAULT_USER = "$( pgrep -n '$DAEMON_BINARY' | xargs -r ps -o uname= -p )"
+  DEFAULT_USER = $( pgrep -n '$DAEMON_BINARY' | xargs -r ps -o uname= -p )
   read -e -p "$(echo -e $YELLOW We found this user running the Masternode. Please change if it is not correct:  $NC)" -i $DEFAULT_USER USER_NAME
 
   if [ -z "$(getent passwd $USER_NAME)" ]; then
