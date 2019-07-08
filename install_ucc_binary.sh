@@ -1,7 +1,7 @@
 #!/bin/bash
 
 TMP_FOLDER=$(mktemp -d)
-BINARY_LINK="https://github.com/UCCNetwork/ucc/releases/download/v2.1.0.0/UCC-Linux64-v2.1.0.0.zip"
+BINARY_LINK="https://github.com/UCCNetwork/ucc/releases/download/v2.2.0.0/UCC-2.2.0.0-Linux64bit.zip"
 CONFIG_FILE="ucc.conf"
 DEFAULT_USER="ucc-mn1"
 DEFAULT_PORT=41112
@@ -20,8 +20,8 @@ NC='\033[0m'
 
 function checks() 
 {
-  if [[ $(lsb_release -d) != *16.04* ]]; then
-    echo -e "${RED}You are not running Ubuntu 16.04. Installation is cancelled.${NC}"
+  if [[ $(lsb_release -d) != *Ubuntu* ]]; then
+    echo -e "${RED}You are not running Ubuntu. Installation is cancelled.${NC}"
     exit 1
   fi
 
