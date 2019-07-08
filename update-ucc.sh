@@ -36,11 +36,9 @@ function stop_service()
 
 function start_service() 
 {
-  clear
   echo -e "${GREEN}Starting UCC Masternode ...${NC}"
   sleep 5
   systemctl start "$USER_NAME"
-  sleep 5
 }
 
 function update_binary() 
@@ -55,6 +53,8 @@ function update_binary()
   echo -e "${GREEN}Replacing the UCC Binary with newer Version ...${NC}"
   cp -a $DAEMON_BINARY $DAEMON_BINARY_FILE
   cp -a $CLI_BINARY $CLI_BINARY_FILE
+  chmod u+x,g+x,+ox $DAEMON_BINARY_FILE
+  chmod u+x,g+x,+ox $CLI_BINARY_FILE
 }
 
 function ask_user() 
