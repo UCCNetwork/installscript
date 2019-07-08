@@ -41,8 +41,8 @@ function checks()
     echo -e "${RED}Searching for the user and data-directoy ...${NC}"
     sleep 2
     DATADIR=$(find /home -type d -name ".ucc")
-    DEFAULT_USER=$(echo "$DATADIR" | rev | awk -F \/ '{print $2}' | rev)
-    if [ -d $DEFAULT_USER ]; then
+    if [ -d $DATADIR ]; then
+      DEFAULT_USER=$(echo "$DATADIR" | rev | awk -F \/ '{print $2}' | rev)
       echo -e "${GREEN}Found the user: $DEFAULT_USER. We continue with the update.${NC}"
     else
       echo -e "${RED}UCC seems not to be installed.${NC}"
@@ -91,11 +91,8 @@ function ask_user()
   read -e -p "$(echo -e $YELLOW We found this user running the Masternode. Please change if it is not correct:  $NC)" -i $DEFAULT_USER USER_NAME
 
   if [ -z "$(getent passwd $USER_NAME)" ]; then
-    clear
     echo -e "${RED}User does not yet exist. Please enter the correct username.${NC}"
     ask_user
-  else
-    clear
   fi
 }
 
