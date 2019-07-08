@@ -29,7 +29,8 @@ function checks()
 function stop_service() 
 {
   clear
-  echo -e "${GREEN}Stopping UCC Masternode ...${NC}"
+  echo -e "${GREEN}Stopping UCC Masternode ... this takes some time ...${NC}"
+  sleep 2
   systemctl stop "$USER_NAME"
 }
 
@@ -37,6 +38,7 @@ function start_service()
 {
   clear
   echo -e "${GREEN}Starting UCC Masternode ...${NC}"
+  sleep 5
   systemctl start "$USER_NAME"
   sleep 5
 }
