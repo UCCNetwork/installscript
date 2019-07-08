@@ -53,8 +53,8 @@ function update_binary()
   echo -e "${GREEN}Replacing the UCC Binary with newer Version ...${NC}"
   cp -a $DAEMON_BINARY $DAEMON_BINARY_FILE
   cp -a $CLI_BINARY $CLI_BINARY_FILE
-  chmod u+x,g+x,+ox $DAEMON_BINARY_FILE
-  chmod u+x,g+x,+ox $CLI_BINARY_FILE
+  chmod 755 $DAEMON_BINARY_FILE
+  chmod 755 $CLI_BINARY_FILE
 }
 
 function ask_user() 
