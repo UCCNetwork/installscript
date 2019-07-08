@@ -2,11 +2,11 @@
 
 TMP_FOLDER=$(mktemp -d)
 BINARY_LINK="https://github.com/UCCNetwork/ucc/releases/download/v2.2.0.0/UCC-2.2.0.0-Linux64bit.zip"
-DEFAULT_USER="$( pgrep -n '$DAEMON_BINARY' | xargs -r ps -o uname= -p )"
 DAEMON_BINARY="uccd"
 CLI_BINARY="ucc-cli"
 DAEMON_BINARY_FILE="/usr/local/bin/$DAEMON_BINARY"
 CLI_BINARY_FILE="/usr/local/bin/$CLI_BINARY"
+DEFAULT_USER="$( pgrep -n '$DAEMON_BINARY' | xargs -r ps -o uname= -p )"
 
 RED='\033[0;31m'
 GREEN='\033[0;32m'
