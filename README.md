@@ -79,15 +79,11 @@ If you want to run the script before setting up the node in your cold wallet the
 
 If you are upgrading an existing node that was installed using the install script above, you can perform these steps to easily update the node without re-sending your UCC collateral.
 
- 1. Run the removal script
- 2. Run the install script, when it asks for a privkey, paste your existing privkey in and do not let the script generate a new one
- 3. Let your node fully sync to the network
- 4. Verify it is running by using `ucc-cli masternode status`
- 5. Start your node from your local PC wallet as usual
+ 1. Run the update script
+ 2. Start your node from your local PC wallet as usual
 
-Your existing privkey can be found in your masternode.conf file, or you can locate it from the SSH shell using
 ```
-cat /home/<username>/.ucc/ucc.conf | grep masternodeprivkey=
+wget -q https://raw.githubusercontent.com/UCCNetwork/installscript/master/update-ucc.sh && bash update-ucc.sh
 ```
 
 &nbsp;
