@@ -2,6 +2,8 @@
 
 TMP_FOLDER=$(mktemp -d)
 BINARY_LINK="https://github.com/UCCNetwork/ucc/releases/download/v2.2.0.0/UCC-2.2.0.0-Linux64bit.zip"
+INSTALL_LINK=https://github.com/UCCNetwork/installscript/raw/master/install_ucc_binary.sh
+INSTALL_FILE=install_ucc_binary.sh
 DAEMON_BINARY="uccd"
 CLI_BINARY="ucc-cli"
 DAEMON_BINARY_FILE="/usr/local/bin/$DAEMON_BINARY"
@@ -13,6 +15,12 @@ GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
 NC='\033[0m'
 
+function load_installer() 
+{
+  wget -q $INSTALL_LINK && bash $INSTALL_FILE
+  exit 0
+}
+
 function checks() 
 {
   if [[ $(lsb_release -d) != *Ubuntu* ]]; then
@@ -23,6 +31,26 @@ function checks()
   if [[ $EUID -ne 0 ]]; then
      echo -e "${RED}$0 must be run as root.${NC}"
      exit 1
+  fi
+  
+  if [ -n "$(pidof $DAEMON_BINARY)" ]; then
+    echo -e "${GREEN}The uccd daemon is already running. We will update it.${NC}"
+  else
+    echo -e "${RED}The uccd daemon is currently not already running. We try update it.${NC}"
+    echo -e "${RED}Searching for the user and data-directoy ....${NC}"
+    DATADIR=$(find /home -type d -name ".ucc")
+    DEFAULT_USER=$(echo "$DATADIR" | rev | awk -F \/ '{print $2}' | rev)
+    if [ -f $DEFAULT_USER ]; then
+      echo -e "${GREEN}Found the user: $DEFAULT_USER.${NC}"
+    else
+      echo -e "${RED}UCC seems not to be installed.${NC}"
+      read -e -p "$(echo -e $YELLOW Should we fetch the install-script and install a new masternode? [Y/N] $NC)" ICHOICE
+      if [[ ("$ICHOICE" == "n" || "$ICHOICE" == "N") ]]; then
+        exit 1;
+      else
+       load_installer
+      fi
+    fi  
   fi
 }
 
