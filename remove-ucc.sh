@@ -35,8 +35,8 @@ function checks()
     sleep 2
     echo -e "${GREEN}Searching for the user and data-directory ...${NC}"
     sleep 2
-    DATADIR=$(find /home -type d -name ".ucc" | head -1)
     DATADIRS=$(find /home -type d -name ".ucc")
+    DATADIR=$(echo "$DATADIRS" | head -1)
     if [ -d $DATADIR ]; then
       DEFAULT_USER=$(echo "$DATADIR" | rev | awk -F \/ '{print $2}' | rev)
       echo -e "${GREEN}Found the user: $DEFAULT_USER. We continue with the removal.${NC}"
