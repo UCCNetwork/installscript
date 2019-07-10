@@ -95,14 +95,16 @@ function prepare_system()
 
 function deploy_binary() 
 {
-  
+  cd "$TMP_FOLDER"
   mkdir ucc_binary && cd ucc_binary
   wget $BINARY_LINK
-  sleep 5
+  sleep 2
   unzip UCC*
   cd UCC*
   cp -a $DAEMON_BINARY $DAEMON_BINARY_FILE
   cp -a $CLI_BINARY $CLI_BINARY_FILE
+  chmod 755 $DAEMON_BINARY_FILE
+  chmod 755 $CLI_BINARY_FILE
   
   if [ -f $DAEMON_BINARY_FILE ]; then
     echo -e "${GREEN}UCC daemon binary file already exists, using binary from $DAEMON_BINARY_FILE.${NC}"
