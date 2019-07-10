@@ -4,6 +4,7 @@ DEFAULT_PORT=41112
 DEFAULT_RPC_PORT=41113
 DAEMON_BINARY="uccd"
 DAEMON_BINARY_FILE="/usr/local/bin/$DAEMON_BINARY"
+DEFAULT_USER="$( pgrep -n $DAEMON_BINARY | xargs -r ps -o uname= -p )"
 
 RED='\033[0;31m'
 GREEN='\033[0;32m'
@@ -12,8 +13,8 @@ NC='\033[0m'
 
 function checks() 
 {
-  if [[ $(lsb_release -d) != *16.04* ]]; then
-    echo -e "${RED}You are not running Ubuntu 16.04. This script is not relevant.${NC}"
+  if [[ $(lsb_release -d) != *Ubuntu* ]]; then
+    echo -e "${RED}You are not running Ubuntu. This script is not relevant.${NC}"
     exit 1
   fi
 
@@ -26,11 +27,27 @@ function checks()
     echo -e "${RED}The UCC daemon is not where it is expected to be, this script is not relevant.${NC}"
     exit 1
   fi
+  
+  if [ -n "$(pidof $DAEMON_BINARY)" ]; then
+    echo -e "${GREEN}The uccd daemon is running. We will stop it before removing process is started.${NC}"
+  else
+    echo -e "${GREEN}The uccd daemon is currently not running. We try locate the correct username.${NC}"
+    sleep 2
+    echo -e "${GREEN}Searching for the user and data-directoy ...${NC}"
+    sleep 2
+    DATADIR=$(find /home -type d -name ".ucc")
+    if [ -d $DATADIR ]; then
+      DEFAULT_USER=$(echo "$DATADIR" | rev | awk -F \/ '{print $2}' | rev)
+      echo -e "${GREEN}Found the user: $DEFAULT_USER. We continue with the removal.${NC}"
+    else
+      echo -e "${RED}UCC seems not to be installed and thus the script is not relevant. You can cancel with CTRL+C anytime.${NC}"
+    fi  
+  fi
 }
 
 function ask_user() 
 {  
-  read -e -p "$(echo -e $YELLOW Enter the username that was used to install the UCC service: $NC)" -i "" USER_NAME
+  read -e -p "$(echo -e $YELLOW We found this username that was used to install the UCC service, please change if it is wrong: $NC)" -i $DEFAULT_USER USER_NAME
 
   if [ -z "$USER_NAME" ]; then
     echo -e "${RED}A username must be provided, so the UCC configuration can be removed.${NC}"
