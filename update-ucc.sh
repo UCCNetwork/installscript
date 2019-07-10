@@ -98,6 +98,12 @@ function ask_user()
   fi
 }
 
+function cleanup()
+{
+  echo -e "${GREEN}Cleaning up the temporary folders ...${NC}"
+  rm -rfv "$TMP_FOLDER"
+}
+
 function show_output() 
 {
  echo
@@ -164,3 +170,4 @@ stop_service
 update_binary
 start_service
 show_output
+cleanup
