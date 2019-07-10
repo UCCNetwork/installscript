@@ -350,6 +350,12 @@ function show_output()
  echo
 }
 
+function cleanup()
+{
+  echo -e "${GREEN}Cleaning up the temporary folders ...${NC}"
+  rm -rfv "$TMP_FOLDER"
+}
+
 function setup_node() 
 {
   ask_user
@@ -410,4 +416,5 @@ if [[ "$NEW_NODE" == "new" ]]; then
   prepare_system
   deploy_binary
   setup_node
+  cleanup
 fi
