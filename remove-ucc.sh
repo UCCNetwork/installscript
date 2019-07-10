@@ -128,6 +128,12 @@ function cleaup_system()
   echo -e "${GREEN}All files and folders for the UCC masternode have been removed from this server.${NC}"
 }
 
+function cleanup()
+{
+  echo -e "${GREEN}Cleaning up the temporary folders ...${NC}"
+  rm -rfv "$TMP_FOLDER"
+}
+
 clear
 
 echo
@@ -166,4 +172,4 @@ fi
 
 checks
 cleaup_system
-
+cleanup
