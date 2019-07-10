@@ -80,30 +80,10 @@ function prepare_system()
   echo -e "${GREEN}Upgrading existing packages, it may take some time to finish.${NC}"
   DEBIAN_FRONTEND=noninteractive apt-get -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" -y -qq upgrade 
   
-  echo -e "${GREEN}Installing all dependencies for the UCC coin master node, it may take some time to finish.${NC}"
-  apt install -y sudo git wget pwgen automake build-essential libtool autotools-dev autoconf pkg-config libssl-dev libboost-all-dev software-properties-common fail2ban ufw htop unzip
-  apt-add-repository -y ppa:bitcoin/bitcoin
-  apt update
-  apt install -y libdb4.8-dev libdb4.8++-dev libminiupnpc-dev libevent-dev
+  echo -e "${GREEN}Installing all dependencies for the UCC master node, it may take some time to finish.${NC}"
+  apt install -y sudo git wget pwgen fail2ban ufw htop unzip
   apt autoremove -y
   apt autoclean -y
-  clear
-  
-  if [ "$?" -gt "0" ]; then
-      echo -e "${RED}Not all of the required packages were installed correctly.\n"
-      echo -e "Try to install them manually by running the following commands:${NC}\n"
-      echo -e "apt update"
-      echo -e "apt upgrade"
-      echo -e "apt install -y git wget pwgen automake build-essential libtool autotools-dev autoconf pkg-config libssl-dev libboost-all-dev software-properties-common fail2ban ufw htop unzip"
-      echo -e "apt-add-repository -y ppa:bitcoin/bitcoin"
-      echo -e "apt update"
-      echo -e "apt install -y libdb4.8-dev libdb4.8++-dev libminiupnpc-dev libevent-dev"
-      echo -e "apt autoremove -y"
-      echo -e "apt autoclean -y"
-   exit 1
-  fi
-
-  clear
 }
 
 function deploy_binary() 
