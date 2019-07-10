@@ -2,6 +2,8 @@
 
 TMP_FOLDER=$(mktemp -d)
 BINARY_LINK="https://github.com/UCCNetwork/ucc/releases/download/v2.2.0.0/UCC-2.2.0.0-Linux64bit.zip"
+UPDATE_LINK=https://github.com/UCCNetwork/installscript/raw/master/update-ucc.sh
+UPDATE_FILE=update-ucc.sh
 CONFIG_FILE="ucc.conf"
 DEFAULT_USER="ucc-mn1"
 DEFAULT_PORT=41112
@@ -18,6 +20,12 @@ GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
 NC='\033[0m'
 
+function load_updater() 
+{
+  wget -q $UPDATE_LINK && bash $UPDATE_FILE
+  exit 0
+}
+
 function checks() 
 {
   if [[ $(lsb_release -d) != *Ubuntu* ]]; then
@@ -29,13 +37,18 @@ function checks()
      echo -e "${RED}$0 must be run as root.${NC}"
      exit 1
   fi
-
+  
   if [ -n "$(pidof $DAEMON_BINARY)" ]; then
-    echo -e "The uccd daemon is already running. UCC does not support multiple masternodes on one host."
-    NEW_NODE="n"
-    clear
+    echo -e "${RED}The uccd daemon is already running. We support no multiple instances on one host.${NC}"
+    sleep 2
+    read -e -p "$(echo -e $YELLOW Should we fetch the update-script instead and update the masternode? [Y/N] $NC)" ICHOICE
+    if [[ ("$ICHOICE" == "n" || "$ICHOICE" == "N") ]]; then
+      exit 1;
+    else
+      load_updater
+    fi
   else
-    NEW_NODE="new"
+    NEW_NODE="new" 
   fi
 }
 
@@ -105,30 +118,6 @@ function deploy_binary()
   cp -a $CLI_BINARY $CLI_BINARY_FILE
   chmod 755 $DAEMON_BINARY_FILE
   chmod 755 $CLI_BINARY_FILE
-  
-  if [ -f $DAEMON_BINARY_FILE ]; then
-    echo -e "${GREEN}UCC daemon binary file already exists, using binary from $DAEMON_BINARY_FILE.${NC}"
-  else
-    cd $TMP_FOLDER
-
-    echo -e "${GREEN}Downloading source code from the UCC GitHub repository at $GITHUB_REPO.${NC}"
-    git clone $GITHUB_REPO
-    cd ucc
-
-    echo -e "${GREEN}Compiling the source code, this will take some time.${NC}"
-    ./autogen.sh
-    ./configure
-    make all install
-
-    echo -e "${GREEN}Copying compiled binaries to the correct location.${NC}"
-    
-    cp ./src/$DAEMON_BINARY /usr/local/bin/ >/dev/null 2>&1
-    cp ./src/$CLI_BINARY /usr/local/bin/ >/dev/null 2>&1
-
-    chmod +x /usr/local/bin/ucc*;
-
-    cd
-  fi
 }
 
 function enable_firewall() 
@@ -421,7 +410,4 @@ if [[ "$NEW_NODE" == "new" ]]; then
   prepare_system
   deploy_binary
   setup_node
-else
-    echo -e "${GREEN}The UCC daemon is already running. UCC does not support multiple masternodes on one host.${NC}"
-  exit 0
 fi
