@@ -38,7 +38,7 @@ function checks()
   else
     echo -e "${RED}The uccd daemon is currently not running. We try update it.${NC}"
     sleep 2
-    echo -e "${RED}Searching for the user and data-directoy ...${NC}"
+    echo -e "${RED}Searching for the user and data-directory ...${NC}"
     sleep 2
     DATADIR=$(find /home -type d -name ".ucc")
     if [ -d $DATADIR ]; then
